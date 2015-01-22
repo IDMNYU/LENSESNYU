@@ -1,0 +1,94 @@
+<link rel="import" href="../polymer/polymer.html"> 
+<link rel="import" href="../th-theme/th-theme.html"> 
+<link rel="import" href="../th-animated/th-animated.html"> 
+
+<!--
+A Thelma component providing solution to no problem in particular.
+
+##### Example
+
+    <rld-yikes></rld-yikes>
+
+@element rld-yikes
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://rev3rend.github.io/rld-yikes
+-->
+
+<polymer-element name="rld-yikes" extends="th-animated"  attributes="author fancy input output">
+  <template>
+    <core-style ref="theme"></core-style>
+    <link rel="stylesheet" href="rld-yikes.css">
+    <h1>good grief: {{author}}</h1>
+    <content></content>
+  </template>
+  <script>
+    Polymer({
+      input: null,
+      output: [],
+      /**
+       * The `author` attribute sets an initial author
+       *
+       * @attribute author
+       * @type string
+       * @default 'Nisha Batra'
+       */
+      author: 'Luke',
+
+      /**
+       * `fancy` is a property that does something fancy.
+       *
+       * @property fancy
+       * @type bool
+       * @default false
+       */
+      fancy: false,
+
+      ready: function () {
+        // Ready is a lifecycle callback.
+        // You can do setup work in here.
+        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
+      },
+      inputChanged: function() {
+          var self = this;
+        //console.log("DUDE!!!!"); // feel good move
+        self.author = "Dude";
+
+          var attributes = Object.keys(self.input[0]);
+          for(var i = 0;i<attributes.length;i++)
+          {
+            console.log(attributes[i]);
+
+          }
+
+          var whichattribute = 1; // 2013 home prices
+
+          var sum = 0;
+          for(var i = 0;i<self.input.length;i++)
+          {
+            var money = self.input[i][attributes[whichattribute]];
+            sum = sum + Number(money.replace(/[^0-9\.]+/g,"")); 
+
+          }
+          sum = sum / self.input.length;
+          console.log(sum);
+          self.author = sum;
+
+
+      },
+      animate: function(){
+        // Animate is a method inherited from the 'th-animated' Thelma component.
+        // You can include code that animates the element here.
+        // Along with it come two attributes, which can be set to time the animation:
+        //   'animateOnInit': accepts a boolean value; if true, animate() will be called when the component is initialized.
+        //   'animateAfter':  accepts a value representing number of milleseconds; if set, animate() will be called 
+        //                    X milleseconds after the component is initialized. 
+      },
+      reset: function(){
+        // Reset is a method inherited from the 'th-animated' Thelma component.
+        // You can include code that takes the component back to the pre-animated state.
+
+       }
+    });
+  </script>
+</polymer-element>

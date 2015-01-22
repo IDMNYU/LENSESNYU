@@ -1,0 +1,12 @@
+{
+  "name": "rld-yikes",
+  "version": "0.0.0",
+  "keywords": "thelma, polymer, web-components",
+  "main": "rld-yikes.html",
+  "dependencies": {
+    "th-animated": "thelmanews/th-animated#master",   
+    "th-theme": "thelmanews/th-theme",
+    "polymer": "Polymer/polymer#~0.5.1"
+  }
+}
+

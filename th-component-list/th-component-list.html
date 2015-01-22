@@ -1,0 +1,136 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-menu/core-menu.html">
+<link rel="import" href="../core-menu/core-submenu.html">
+<link rel="import" href="../core-item/core-item.html">
+<link rel="import" href="../rld-component-test/rld-component-test.html">
+<link rel="import" href="../rld-yikes/rld-yikes.html">
+
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+    <th-component-list></th-component-list>
+
+@element th-component-list
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://polymerlabs.github.io/th-component-list
+-->
+<polymer-element name="th-component-list" attributes="componentList">
+
+  <template>
+
+    <link rel="stylesheet" href="th-component-list.css" />
+<!--
+    <template if="{{componentList.length>0}}">
+        <core-menu id="component-list">
+          <template repeat="{{component in componentList}}">
+            <core-item class="{{component.name}}" on-dragStart="{{dragStartList}}"  draggable="true" label="{{component.friendly || component.name}}"></core-item>
+          </template>
+        </core-menu>
+      </template>
+  -->
+
+    <template if="{{_sortedComponentList.length>0}}">
+        <core-menu id="component-list">
+          <template repeat="{{category in _sortedComponentList}}">
+            <core-submenu icon="expand-more" label="{{category.name}}">
+              <template repeat="{{component in category.components}}">
+                <core-item class="{{component.name}}" on-dragStart="{{dragStartList}}"  draggable="true" label="{{component.friendly || component.name}}"></core-item>
+              </template>
+            </core-submenu>
+          </template>
+        </core-menu>
+      </template>
+
+
+  </template>
+
+  <script>
+
+    Polymer({
+      /**
+       * Main categories for the menu. Anything other than categories here will be after the main categories in the list
+       * @type {Array}
+       */
+      mainCategories: ['input', 'transform', 'visualize'],
+      /**
+       * List of components as an array of objects.
+       * @type {Array}
+       * @example [{"name":"th-mapbox", "friendly":"Mapbox", "category":"Maps"}]
+       */
+      componentList: [
+                        {name:'th-csv', friendly: 'CSV Loader', category: 'input'},
+                        {name: 'th-enigma', friendly: 'Enigma Data Loader', category: 'input'},
+                        {name:'th-table-data', friendly: 'HTML Table Data Loader', category: 'input'},
+
+                        {name:'th-array-function', friendly: 'Map/Reduce/Filter Functions', category: 'transform'},
+                        {name:'th-geocoder-firebase', friendly: 'Geocode Data', category: 'transform'},
+                        {name:'th-chart-data-filter', friendly: 'Convert Data to Chart Format', category: 'transform'},
+
+                        {name:'th-map-us', friendly: 'US Map', category: 'visualize'},
+                        {name:'th-n-bar-chart', friendly: 'Bar Chart', category: 'visualize'},
+                        {name:'th-google-map', friendly: 'Google Map', category: 'visualize'},
+                        {name:'th-google-scatter-bubble', friendly: 'Bubble Chart', category: 'visualize'},
+                        {name:'th-google-pie', friendly: 'Pie Chart', category: 'visualize'},
+                        {name:'th-google-regions', friendly: 'Regions Chart', category: 'visualize'},
+
+                       {name:'rld-component-test', friendly: 'foo', category: 'visualize'},
+                       {name:'rld-yikes', friendly: 'yay!!!', category: 'transform'}
+
+                       ],
+        /**
+         * Component list orderes by category
+         * @type {Array}
+         * @example [{name: 'input', components [{name:'th-csv', friendly: 'CSV Loader', category: 'input'}, ...]}, ...]
+         */
+        _sortedComponentList: [],
+        ready: function() {
+          this._sortByCategory();
+        },
+        /**
+         * DragStart event handler sets component name in dataTransfer Object
+         * @param  {[type]} e         Event
+         * @param  {[type]} detail    Details
+         * @param  {[type]} selection Selection
+         * @return {[None]}           
+         */
+        dragStartList: function(e, detail, selection) {
+           e.dataTransfer.setData("text/plain",selection.classList[0]);
+
+        },
+        /**
+         * Sorts componentList by category
+         * @return {[type]} [description]
+         */
+        _sortByCategory: function() {
+          var self = this;
+
+          // create empty categoryList
+          self._sortedComponentList = self.mainCategories.map(function(item) {
+            return {name: item, components: []};
+          });
+
+          self._sortedComponentList = self.componentList.reduce(function(prev, item) {
+            var cat = item.category;
+            var category = prev.filter(function(item) {
+              return item.name === cat;
+            });
+            if(category.length==0) {
+              prev.push({name: cat, components: [item]});
+            }
+            else {
+              category[0].components.push(item);
+            }
+            return prev;
+
+          }, self._sortedComponentList);
+
+        }
+
+    });
+
+  </script>
+
+</polymer-element>

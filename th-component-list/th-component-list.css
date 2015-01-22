@@ -1,0 +1,23 @@
+	:host {
+	  display: block;
+	}
+
+  #component-list {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    height: auto;
+    width: 200px;
+    border: 3px solid #eee;
+    box-sizing: border-box;
+  }
+
+  #component-list core-item {
+    font-size: 12px;
+    padding: 0px 10px;
+    cursor: pointer;
+  }
+
+  #component-list core-item:hover {
+    background-color: #eee;
+  }
