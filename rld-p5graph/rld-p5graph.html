@@ -21,6 +21,14 @@ A Thelma component providing solution to no problem in particular.
     <link rel="stylesheet" href="rld-p5graph.css">
     <content></content>
     <div>
+      <!--
+      CRAZY:
+      -->
+      <template if="{{valuemin&&valuemax}}">
+        <h2>mouse is at: {{mouselabel}}</h2>
+        <h2>min is: {{valuemin}}</h2>
+        <h2>max is: {{valuemax}}</h2>
+      </template>
     <div id="p5canvas"></div>
   </div>
 
@@ -35,7 +43,7 @@ local copy of p5.js
   <script>
 
     Polymer({
-      input: null,
+      input: null, // start this at nothing
       /**
        * The `author` attribute sets an initial author
        *
@@ -44,7 +52,11 @@ local copy of p5.js
        * @default 'Nisha Batra'
        */
       author: 'R. Luke DuBois',
-
+      keys: [], // list of key names
+      valuelist: [], // how to make a new array
+      valuemax: null, // biggest number
+      valuemin: null, // smallest number
+      mouselabel: null, // this is the value the mouse is over
       /**
        * `fancy` is a property that does something fancy.
        *
@@ -58,7 +70,7 @@ local copy of p5.js
         // You can do setup work in here.
         // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
 
-        var self = this;
+        var self = this; // this is also a good move
           var sketch = function(sketch) {
 
           // circular reference?
@@ -75,8 +87,38 @@ local copy of p5.js
           // local draw
           sketch.draw =  function() {
             with(sketch) {
+              background(255);
+              stroke(255, 0, 0);
+              fill(0, 0, 255);
+              var prevx = 0;
+              var prevy = 0;
+              //console.log("we have " + valuelist.length + " elements.");
+              //console.log("minimum is " + valuemin + ", maximum is " + valuemax);
+              //for(var i = 0;i<valuelist.length;i++)
+              //{
+                //console.log(valuelist[i]);
+              //}
+              for(var i = 0;i<self.valuelist.length;i++)
+              {
+                xpos = map(i, 0, self.valuelist.length-1, 0, width);
+                ypos = map(self.valuelist[i], self.valuemin, self.valuemax, height, 0);
+                if(i>0) line(prevx, prevy, xpos, ypos);
+                ellipse(xpos, ypos, 10, 10);
+                prevx = xpos;
+                prevy = ypos;
+              }
 
-              ellipse(mouseX, mouseY, 10, 10);
+              var whichpointx = constrain(Math.floor(map(mouseX, 0, width, 0, self.valuelist.length-1)), 0, self.valuelist.length-1);
+
+              var targetval = map(self.valuelist[whichpointx], self.valuemin, self.valuemax, height, 0);
+              var fuzzfactor = 10;
+
+             if(mouseY>targetval-fuzzfactor && mouseY<targetval+fuzzfactor) {
+                // shitty hit detection
+              self.mouselabel = self.input[whichpointx][self.keys[0]];
+              }
+
+              //ellipse(mouseX, mouseY, 10, 10);
 
 
             }
@@ -89,16 +131,34 @@ local copy of p5.js
         self._p5 = new p5(sketch, self.$.p5canvas);
       },
       inputChanged: function(){
-          var self = this;
+        var self = this; // this is a good move
         //console.log("DUDE!!!!"); // feel good move
         self.author = "Dude";
 
-          var attributes = Object.keys(self.input[0]);
-          for(var i = 0;i<attributes.length;i++)
+          self.keys = Object.keys(self.input[0]);
+          for(var i = 0;i<self.keys.length;i++)
           {
-            console.log(attributes[i]);
+            console.log(self.keys[i]);
 
           }
+
+          var whichkey = 1; // 2013 home prices
+          self.valuelist = new Array(); // blow away existing valuelist
+          self.valuemin = null;
+          self.valuemax = null;
+          for(var i = 0;i<self.input.length;i++)
+          {
+            var money = self.input[i][self.keys[whichkey]];
+            var value = Number(money.replace(/[^0-9\.]+/g,"")); 
+            if(self.valuemin==null) self.valuemin = value;
+            if(self.valuemax==null) self.valuemax = value;
+            if(self.valuemin>value) self.valuemin = value;
+            if(self.valuemax<value) self.valuemax = value;
+           self.valuelist.push(value);
+ 
+          }
+
+
 
       },
       reset: function(){
