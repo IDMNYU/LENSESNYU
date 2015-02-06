@@ -1,0 +1,132 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww15620\viewh10720\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs36 \cf0 \
+
+\b\fs58 HOW TO ADD SOME ELEMENTS:\
+
+\b0\fs36 \
+\
+\'95 make a new thelma element using the \'91
+\i makenewcomponent.sh
+\i0 \'92 yeoman script (available under the IDMNYU github repos)\
+\
+\'95 in the HTML code for the element, we added the following stuff:\
+\
+
+\b TO GET AN INLET in the TH-CONNECTOR:
+\b0 \
+\
+1 - we had to add an \'91input\'92 attribute into the polymer tag, e.g.:\
+\
+
+\f1\fs24 <polymer-element name="rld-p5graph" extends="th-animated"  attributes="input">\
+
+\f0\fs36 \
+2 - we had to add a data structure for \'91input\'92 in the Polymer code in the main javascript block, e.g.:\
+\
+
+\f1\fs24   <script>\
+\
+    Polymer(\{\
+      input: null, // start this at nothing\
+
+\f0\fs36 \
+3 - we had to add a callback function in the main polymer javascript code called inputChanged(), e.g.:\
+\
+
+\f1\fs24       inputChanged: function()\{\
+		\},\
+
+\f0\fs36 \
+
+\b TO REGISTER THE ELEMENT with the TH-CONNECTOR:
+\b0 \
+\
+1 - you open up \'91th-component-list.html\'92 under the \'91th-component-list\'92 folder in the lenses directory.\
+\
+2 - you add your new component\'92s URL at the top where all the html includes go, e.g.:\
+\
+
+\f1\fs24 <link rel="import" href="../rld-p5graph/rld-p5graph.html">\
+
+\f0\fs36 \
+3 - you add your new component towards the bottom in the list of available elements for the th-component-list page, e.g.:\
+\
+
+\f1\fs24 \{name:'rld-p5graph', friendly: 'P5 Test Graph', category: 'visualize'\}\
+
+\f0\fs36 \
+the categories don\'92t really mean anything structural, they just determine where they are in the menu system in the th-connector demo.  so it\'92s okay to have a visualizer under the \'91transform\'92 menu, etc.\
+ \
+
+\b TO USE P5.JS IN YOUR ELEMENT:
+\b0 \
+\
+1 - put a local copy of p5.js in your folder with your element.\
+\
+2 - open up the HTML file for your element.  you have to add some HTML, and some javascript.\
+\
+3 - put a <div> inside of a <div> with a name for p5 canvas in the <template> for your polymer element, e.g.:\
+ \
+
+\f1\fs24 <template>\
+    <core-style ref="theme"></core-style>\
+    <link rel="stylesheet" href="rld-p5graph.css">\
+    <content></content>\
+    <div>\
+    <div id="p5canvas"></div>\
+  </div>\
+  </template>\
+
+\f0\fs36 \
+4 - reference the p5.js file before you get to your main script, e.g.:\
+\
+
+\f1\fs24 <!--\
+local copy of p5.js\
+-->\
+  <script src="p5.js"></script>\
+
+\f0\fs36 \
+5 - in your \'91ready\'92 function the polymer javascript code, you gotta add some stuff:\
+\
+
+\f1\fs24      ready: function () \{\
+        // Ready is a lifecycle callback.\
+        // You can do setup work in here.\
+        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods\
+\
+        var self = this;\
+          var sketch = function(sketch) \{\
+\
+          // local setup\
+          sketch.setup = function() \{\
+            with(sketch) \{\
+			// your SETUP processing code goes here, e.g.;\
+             		createCanvas(300, 300);\
+ \
+            \}\
+          \}\
+          // local draw\
+          sketch.draw =  function() \{\
+            with(sketch) \{\
+			// your DRAW processing code goes here\
+            \}\
+          \}\
+          return sketch;\
+        \}\
+\
+        // this instantiates p5:\
+        self._p5 = new p5(sketch, self.$.p5canvas);\
+      \},\
+
+\f0\fs36 \
+6 - have fun.\
+\
+\
+\
+}
