@@ -1,0 +1,114 @@
+<link rel="import" href="../polymer/polymer.html"> 
+<link rel="import" href="../th-theme/th-theme.html"> 
+<link rel="import" href="../th-animated/th-animated.html"> 
+
+<!--
+A Thelma component providing solution to no problem in particular.
+
+##### Example
+
+    <rld-p5graph></rld-p5graph>
+
+@element rld-p5graph
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://rev3end.github.io/rld-p5graph
+-->
+
+<polymer-element name="rld-p5graph" extends="th-animated"  attributes="author input">
+  <template>
+    <core-style ref="theme"></core-style>
+    <link rel="stylesheet" href="rld-p5graph.css">
+    <content></content>
+    <div>
+    <div id="p5canvas"></div>
+  </div>
+
+  </template>
+
+
+<!--
+local copy of p5.js
+-->
+  <script src="p5.js"></script>
+
+  <script>
+
+    Polymer({
+      input: null,
+      /**
+       * The `author` attribute sets an initial author
+       *
+       * @attribute author
+       * @type string
+       * @default 'Nisha Batra'
+       */
+      author: 'R. Luke DuBois',
+
+      /**
+       * `fancy` is a property that does something fancy.
+       *
+       * @property fancy
+       * @type bool
+       * @default false
+       */
+
+      ready: function () {
+        // Ready is a lifecycle callback.
+        // You can do setup work in here.
+        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
+
+        var self = this;
+          var sketch = function(sketch) {
+
+          // circular reference?
+          
+          // local setup
+          sketch.setup = function() {
+            with(sketch) {
+              
+              createCanvas(300, 300);
+              background(100);
+            
+            }
+          }
+          // local draw
+          sketch.draw =  function() {
+            with(sketch) {
+
+              ellipse(mouseX, mouseY, 10, 10);
+
+
+            }
+
+          }
+          return sketch;
+        }
+
+        // this instantiates p5:
+        self._p5 = new p5(sketch, self.$.p5canvas);
+      },
+      inputChanged: function(){
+          var self = this;
+        //console.log("DUDE!!!!"); // feel good move
+        self.author = "Dude";
+
+          var attributes = Object.keys(self.input[0]);
+          for(var i = 0;i<attributes.length;i++)
+          {
+            console.log(attributes[i]);
+
+          }
+
+      },
+      reset: function(){
+        // Reset is a method inherited from the 'th-animated' Thelma component.
+        // You can include code that takes the component back to the pre-animated state.
+
+      },
+
+      });
+  </script>
+
+
+</polymer-element>

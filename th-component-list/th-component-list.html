@@ -1,9 +1,36 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-menu/core-menu.html">
 <link rel="import" href="../core-menu/core-submenu.html">
-<link rel="import" href="../core-item/core-item.html">
+
+<link rel="import" href="../th-mapbox/th-mapbox.html">
+<link rel="import" href="../th-geocoder-firebase/th-geocoder-firebase.html">
+<link rel="import" href="../th-csv/th-csv.html">
+<link rel="import" href="../th-enigma/th-enigma.html">
+<link rel="import" href="../th-google-map/th-google-map.html">
+<link rel="import" href="../th-map-us/th-map-us.html">
+<link rel="import" href="../th-table-data/th-table-data.html">
+<link rel="import" href="../th-array-function/th-array-function.html">
+<link rel="import" href="../th-n-bar-chart/th-n-bar-chart.html">
+<link rel="import" href="../th-n-bar-chart-horizontal/th-n-bar-chart-horizontal.html">
+<link rel="import" href="../th-chart-data-filter/th-chart-data-filter.html">
+
+<link rel="import" href="../th-data-group-by/th-data-group-by.html">
+<link rel="import" href="../th-data-split/th-data-split.html">
+<link rel="import" href="../th-data-sort/th-data-sort.html">
+<link rel="import" href="../th-math-formula/th-math-formula.html">
+<link rel="import" href="../th-data-join/th-data-join.html">
+
+
+<link rel="import" href="../th-google-scatter-bubble/th-google-scatter-bubble.html">
+<link rel="import" href="../th-google-regions/th-google-regions.html">
+<link rel="import" href="../th-google-pie/th-google-pie.html">
+<link rel="import" href="../th-google-bar-chart/th-google-bar-chart.html">
+<link rel="import" href="../th-google-line/th-google-line.html">
 <link rel="import" href="../rld-yikes/rld-yikes.html">
 <link rel="import" href="../rld-p5test/rld-p5test.html">
+<link rel="import" href="../rld-p5graph/rld-p5graph.html">
+
+
 
 <!--
 Element providing solution to no problem in particular.
@@ -68,17 +95,26 @@ Element providing solution to no problem in particular.
                         {name:'th-array-function', friendly: 'Map/Reduce/Filter Functions', category: 'transform'},
                         {name:'th-geocoder-firebase', friendly: 'Geocode Data', category: 'transform'},
                         {name:'th-chart-data-filter', friendly: 'Convert Data to Chart Format', category: 'transform'},
+                        {name:'th-data-group-by', friendly: 'Group rows', category: 'transform'},
+                        {name:'th-data-split', friendly: 'Split columns', category: 'transform'},
+                        {name:'th-data-sort', friendly: 'Sort rows', category: 'transform'},
+                        {name:'th-math-formula', friendly: 'Math Formula', category: 'transform'},
+                        {name:'th-data-join', friendly: 'Join Two Columns', category: 'transform'},
 
                         {name:'th-map-us', friendly: 'US Map', category: 'visualize'},
                         {name:'th-n-bar-chart', friendly: 'Bar Chart', category: 'visualize'},
+                        {name:'th-n-bar-chart-horizontal', friendly: 'Horizontal Bar Chart', category: 'visualize'},
                         {name:'th-google-map', friendly: 'Google Map', category: 'visualize'},
                         {name:'th-google-scatter-bubble', friendly: 'Bubble Chart', category: 'visualize'},
                         {name:'th-google-pie', friendly: 'Pie Chart', category: 'visualize'},
                         {name:'th-google-regions', friendly: 'Regions Chart', category: 'visualize'},
+                        {name:'th-google-bar-chart', friendly: 'G Bar Chart', category: 'visualize'},
+                        {name:'th-google-line', friendly: 'G Line Chart', category: 'visualize'},
+                        {name:'th-mapbox', friendly:'Mapbox', category:'visualize'},
 
-                        {name:'rld-yikes', friendly: 'yay!!!', category: 'transform'},
-                        {name:'rld-p5test', friendly: 'p5!!!', category: 'transform'}
-
+                       {name:'rld-yikes', friendly: 'yay!!!', category: 'transform'},
+                        {name:'rld-p5test', friendly: 'p5!!!', category: 'transform'},
+                        {name:'rld-p5graph', friendly: 'P5 Test Graph', category: 'visualize'}
                        ],
         /**
          * Component list orderes by category

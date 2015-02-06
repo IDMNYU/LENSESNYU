@@ -1,0 +1,12 @@
+{
+  "name": "rld-p5graph",
+  "version": "0.0.0",
+  "keywords": "thelma, polymer, web-components",
+  "main": "rld-p5graph.html",
+  "dependencies": {
+    "th-animated": "thelmanews/th-animated#master",   
+    "th-theme": "thelmanews/th-theme",
+    "polymer": "Polymer/polymer#~0.5.1"
+  }
+}
+
