@@ -36,9 +36,10 @@ A Thelma component providing solution to no problem in particular.
 
 
 <!--
-local copy of p5.js
+local copy of p5.js and Tone.js
 -->
   <script src="p5.js"></script>
+  <script src="Tone.js"></script>
 
   <script>
 
@@ -57,6 +58,9 @@ local copy of p5.js
       valuemax: null, // biggest number
       valuemin: null, // smallest number
       mouselabel: null, // this is the value the mouse is over
+      osc: null, // this is the oscillator
+      filter: null, // this is the filter
+      ffreq: 600, // frequency of the filter
       /**
        * `fancy` is a property that does something fancy.
        *
@@ -83,6 +87,13 @@ local copy of p5.js
               background(100);
             
             }
+            // tone setup
+            self.osc = new Tone.Oscillator(440, "sawtooth"); // sine wave
+            self.filter = new Tone.Filter(self.ffreq, "lowpass");
+            self.osc.connect(self.filter); // patch oscillator to filter
+            self.filter.toMaster(); // patch filter to the speakers
+            self.osc.setVolume(0); // gives it a volume (0 is LOUD)
+            self.osc.start(); // starts it running
           }
           // local draw
           sketch.draw =  function() {
@@ -116,7 +127,17 @@ local copy of p5.js
              if(mouseY>targetval-fuzzfactor && mouseY<targetval+fuzzfactor) {
                 // shitty hit detection
               self.mouselabel = self.input[whichpointx][self.keys[0]];
+              self.osc.setFrequency(self.valuelist[whichpointx]/1000., 0.2);
+              self.osc.setVolume(0., 0.2);
               }
+              else {
+                self.osc.setVolume(-1000., 0.2);
+              }
+
+              // bad wah-wah
+              self.ffreq = self.ffreq+10.;
+              if(self.ffreq>3000.) self.ffreq=200.;
+              self.filter.setFrequency(self.ffreq);
 
               //ellipse(mouseX, mouseY, 10, 10);
 
@@ -164,6 +185,10 @@ local copy of p5.js
       reset: function(){
         // Reset is a method inherited from the 'th-animated' Thelma component.
         // You can include code that takes the component back to the pre-animated state.
+
+      },
+      detached: function() {
+        self.osc.stop(); // stops the oscillator
 
       },
 
