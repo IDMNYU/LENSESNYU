@@ -1,0 +1,10 @@
+:host {
+  display: inline-block;
+  color: black;
+  width: 300px;
+  height: 300px;
+}
+h2 {
+	font-size: 12px;
+	overflow: hidden;
+}

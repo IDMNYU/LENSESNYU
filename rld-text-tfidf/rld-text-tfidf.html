@@ -1,0 +1,245 @@
+<link rel="import" href="../polymer/polymer.html"> 
+<link rel="import" href="../th-theme/th-theme.html"> 
+<link rel="import" href="../th-animated/th-animated.html"> 
+<link rel="import" href="../core-selector/core-selector.html">
+<link rel="import" href="../core-input/core-input.html">
+<link rel="import" href="../core-collapse/core-collapse.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../core-menu/core-menu.html">
+<link rel="import" href="../core-item/core-item.html">
+
+<!--
+A Thelma component providing solution to no problem in particular.
+
+##### Example
+
+    <rld-text-tfidf></rld-text-tfidf>
+
+@element rld-text-tfidf
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://rev3end.github.io/rld-text-tfidf
+-->
+
+<polymer-element name="rld-text-tfidf" extends="th-animated"  attributes="input">
+  <template>
+    <style>
+        :host {
+          max-width: 500px;
+          font-family: open-sans, sans-serif;
+          font-size: 12px;
+
+        }
+         .selection {
+        border-top: 2px solid #2fa3af;
+        padding: 2px;
+        max-width: 300px;
+
+      }
+
+    </style>
+    <core-style ref="theme"></core-style>
+    <link rel="stylesheet" href="rld-text-tfidf.css">
+    <content></content>
+
+    <template if="{{words}}">
+      <h2>Viewing: {{whichDocument}}</h2>
+    </template>
+    <template if="{{words}}">
+      <div id="tfwords"></div>
+    </template>
+
+    <template if="{{!included}}">
+      <core-icon-button icon="perm-data-setting" on-click="{{showControls}}"></core-icon-button>
+    </template>
+
+    <core-collapse id="ctrl_collapse">      
+
+      <div class="selection">
+        <label for="">Document within Corpus:</label> 
+        <input is="core-input" value="{{whichDocument}}" placeHolder="Which Document">
+      </div>
+     <div class="selection">
+        <label for="">Threshold of Relevance (0-1):</label> 
+        <input is="core-input" value="{{threshold}}" placeHolder="Threshold">
+      </div>
+
+    </core-collapse>
+
+
+  </template>
+
+
+<!--
+local copy of p5.js and Tone.js
+-->
+  <script src="p5.js"></script>
+
+  <script>
+
+    Polymer({
+      input: null, // start this at nothing
+      /**
+       * The `author` attribute sets an initial author
+       *
+       * @attribute author
+       * @type string
+       * @default 'Nisha Batra'
+       */
+       df: {}, // corpus frequencies (object)
+       tfidf: [], // current term frequency (sorted array)
+       threshold: 0.75,
+       whichDocument: 0, // which element in corpus
+       words: [], // words to view
+
+      /**
+       * `fancy` is a property that does something fancy.
+       *
+       * @property fancy
+       * @type bool
+       * @default false
+       */
+
+      ready: function () {
+        // Ready is a lifecycle callback.
+        // You can do setup work in here.
+        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
+
+        var self = this; // this is also a good move
+        
+      },
+      inputChanged: function(){
+        var self = this; // this is a good move
+        //  console.log(self.input);
+          self.words = "DUDE!";
+          self.df = {}; // corpus frequency (OBJECT)
+          self.tfidf = []; // term frequency for specific documents in corpus (ARRAY)
+          
+          // STEP 1 : build Document Frequency dictionary (DF)
+          for(var i = 0;i<self.input.length;i++)
+          {
+            // split by words
+            var words = self.input[i].value.split(" ");
+            // add to dictionary
+            for(var j = 0;j<words.length;j++)
+            {
+              var currentword = words[j];
+              if(currentword in self.df)
+              {
+                self.df[currentword]++;
+              }
+              else // new word
+              {
+                self.df[currentword]=1;
+              }
+            }
+
+            //console.log(df); // DEBUG
+          }
+
+          // STEP 2: do Term Frequency / Inverse Document Frequency on Document 0
+          self.tfidf = self.doTFIDF(self.input[self.whichDocument].value, self.df);
+
+          //console.log(tfidf);
+          self.visualize();
+
+      },
+      visualize: function() {
+          // STEP 3: over threshold
+
+          self = this;
+          self.words = "<ul>";
+
+          var oldval = 1;
+          for(var i = 0;i<self.tfidf.length;i++)
+          {
+            if(self.tfidf[i].value>=self.threshold) {
+              if(self.tfidf[i].value<oldval||i==0) self.words+="<li><i>"+self.tfidf[i].value+":</i> "; else self.words+=" / ";
+              self.words+=self.tfidf[i].key;
+              oldval = self.tfidf[i].value;
+            }
+            else {
+              break;
+            }
+
+          }
+          self.words+="</ul>";
+          this.injectBoundHTML(self.words, this.$.tfwords);
+
+      },
+      doTFIDF: function(s, d) {
+        var t = {};
+        var words = s.split(" ");
+
+        // add words to (local) dictionary
+        for(var i = 0;i<words.length;i++)
+        {
+          var currentword = words[i];
+          if(currentword in t) // word exists in dictionary
+          {
+            t[currentword]++;
+          }
+          else // new word... set initial value
+          {
+            t[currentword]=1;
+          }
+        }
+
+        // divide by master dictionary
+        for(key in t)
+        {
+          var docfreq = d[key];
+          t[key] = t[key]/docfreq;
+        }
+
+        // push into sorted array
+        var srt = [];
+        for (var k in t)
+        {
+          var o = {key: k, value : t[k]};
+          srt.push(o);
+        }
+        srt.sort(function(a, b) {return b.value - a.value}); // reverse sort
+
+        return(srt);
+
+      },
+      reset: function(){
+        // Reset is a method inherited from the 'th-animated' Thelma component.
+        // You can include code that takes the component back to the pre-animated state.
+
+      },
+      detached: function() {
+      },
+      whichDocumentChanged: function() {
+        var self=this;
+        if(self.input==null || self.whichDocument<0) self.whichDocument = 0;
+        else {
+          if(self.whichDocument>self.input.length-1) self.whichDocument=self.input.length-1;
+        }
+        self.whichDocument = Math.floor(self.whichDocument); // integer
+
+        self.tfidf = self.doTFIDF(self.input[self.whichDocument].value, self.df);
+
+        self.visualize();
+
+      },
+      thresholdChanged: function() {
+        var self=this;
+        if(self.threshold<0) self.threshold=0;
+        if(self.threshold>1) self.threshold=1;
+
+        self.tfidf = self.doTFIDF(self.input[self.whichDocument].value, self.df);
+
+        self.visualize();
+
+      },
+      showControls: function(e) {
+        this.$.ctrl_collapse.toggle();
+      }
+
+      });
+  </script>
+
+
+</polymer-element>

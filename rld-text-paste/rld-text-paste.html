@@ -1,0 +1,155 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../th-animated/th-animated.html">
+<link rel="import" href="../core-collapse/core-collapse.html">
+<link rel="import" href="../aha-table/src/aha-table.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
+
+
+<!--
+Copy any html table or list and paste it inside the text box. It returns
+JSON for table/list data.
+
+##### Example
+
+    <rld-text-paste></rld-text-paste>
+
+@element rld-text-paste
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://sepans.github.io/rld-text-paste
+-->
+<polymer-element name="rld-text-paste" extends="th-animated" attributes="output">
+
+
+  <template>
+
+    <style>
+      .disabled {
+        color: #EEE;
+      }
+
+      core-icon-button {
+        vertical-align: top;
+      }
+
+      #paste_here {
+        height: 35px;
+        width: 95px;
+      }
+      .table-container {
+        width: 500px;
+        height: 400px;
+        overflow: scroll;
+        resize: both;
+      }
+
+
+    </style>
+
+
+
+    <textarea id="paste_here" placeHolder="paste plain text here!"></textarea>
+
+    <core-icon-button icon="view-list" on-click="{{showResults}}" class="{{ {disabled: !hasData} | tokenList}}"></core-icon-button>
+
+    <core-collapse id="results_collapse">
+
+      <div class="table-container">
+        <!-- aha-table doesn't update the columns -->
+        <aha-table id="table" pagesize="10" editable="false"  class="bootstrap" showFooter="true"></aha-table>
+
+      </div>
+    </core-collapse>
+
+  </template>
+
+  <script>
+
+    Polymer('rld-text-paste', {
+      textData: null,
+      hasData: false,
+
+      ready: function() {
+        var self = this;
+
+
+        //self.hasData = false;
+        self.$.paste_here.addEventListener('paste', self.processInput.bind(self));
+      },
+
+      processInput: function(e) {
+
+          var self = this;
+          self.$.paste_here.value="Processing text...";
+
+          // get text data
+          var textData = e.clipboardData.getData('text/plain');
+ 
+          //
+          // THIS NEEDS TO BE EXPOSED IN THE UX:
+          //
+          var delimiter = /CHAPTER [A-Z]+\s/;
+
+          var subData = textData.split(delimiter); // split into sections
+
+          var data = [];
+
+          //console.log(subData.length);
+
+          for(var i = 0;i<subData.length;i++)
+          {
+            // clean text data
+            subData[i] = subData[i].replace(/[^a-zA-Z0-9' ]/g, " "); // non-alphanumberic
+            subData[i] = subData[i].toLowerCase(); // lower case
+            subData[i] = subData[i].trim().replace(/\s+/g, " "); // white space
+            data.push({key: i, value: subData[i]});
+          }
+
+          console.log(data);
+
+          self.$.table.data = [];
+
+
+
+          if(data && data.length>0) {
+
+            setTimeout(function() {
+
+              self.$.paste_here.value="Data processed";
+
+              //console.log(data);
+              //self.tableData = data;
+              self.$.table.data = data;
+              self.hasData = true;
+              self.output = data;
+            },100);
+
+          }
+          else {
+            self.$.paste_here.value="No text found";
+            self.hasData = false;
+          }
+
+
+          e.preventDefault();
+      },
+
+      showResults: function(e) {
+          if(this.hasData) {
+            // if(this.$.ctrl_collapse.opened && !this.$.results_collapse.opened) {
+            //   this.$.ctrl_collapse.toggle();
+            // }
+            this.$.results_collapse.toggle();
+          }
+      }, 
+      outputChanged: function(){
+        console.log("rld-text-paste output changed");
+        this.fire('th-output-changed', this);
+      }
+
+
+    });
+
+  </script>
+
+</polymer-element>

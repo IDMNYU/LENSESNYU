@@ -1,0 +1,25 @@
+{
+  "name": "th-table-data",
+  "keywords": [
+    "seed",
+    "polymer",
+    "web-components"
+  ],
+  "main": "th-table-data.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.1",
+    "aha-table": "liuwenchao/aha-table#master",
+    "core-collapse": "polymer/core-collapse#~0.5.1",
+    "core-icon-button": "polymer/core-icon-button#~0.5.1"
+  },
+  "homepage": "https://github.com/thelmanews/th-table-data",
+  "_release": "fffa0ecc3a",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "fffa0ecc3ab1dd2fd98646882f7cc06b96a6b943"
+  },
+  "_source": "git://github.com/thelmanews/th-table-data.git",
+  "_target": "*",
+  "_originalSource": "thelmanews/th-table-data"
+}
